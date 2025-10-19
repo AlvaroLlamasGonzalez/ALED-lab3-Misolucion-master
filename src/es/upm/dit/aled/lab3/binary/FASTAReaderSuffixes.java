@@ -79,6 +79,8 @@ public class FASTAReaderSuffixes extends FASTAReader {
 	@Override
 	public List<Integer> search(byte[] pattern) {
 		// TODO
+		//debe aprovecharse de la lista ordenada de sufijos para poder ejecutar
+		//una búsqueda binaria.
 		return null;
 	}
 
