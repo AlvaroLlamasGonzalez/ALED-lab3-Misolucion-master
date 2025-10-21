@@ -1,5 +1,6 @@
 package es.upm.dit.aled.lab3.binary;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -81,8 +82,70 @@ public class FASTAReaderSuffixes extends FASTAReader {
 		// TODO
 		//debe aprovecharse de la lista ordenada de sufijos para poder ejecutar
 		//una búsqueda binaria.
-		return null;
-	}
+		int lo = 0;
+		int hi = suffixes.length -1;
+		//determinar si se ha encontrado el pattern (el patrón)
+		boolean found = false;
+		List<Integer> posiciones = new ArrayList<Integer>();
+		int index=0; 
+		int posicionCoincidencia = 0;
+		while(!((hi - lo <= 1) || (found==true))) {
+			int m = (lo+hi)/2;
+			int posSuffix = suffixes[m].suffixIndex;
+			if ((index == pattern.length-1) && (pattern[index] == content[posSuffix + index])){
+				posiciones.add(posSuffix);
+				found = true;
+				posicionCoincidencia = m;
+			}else if (pattern[index] == content[posSuffix + index]) {
+				index++;
+			}else if (pattern[index] <content[posSuffix + index]) {
+					hi = m--;
+					index = 0;	 		
+				}else if (pattern[index] >content[posSuffix + index]) {
+					lo = m++;
+					index = 0;
+				}
+		
+		
+		}
+		
+		boolean arriba = true;
+		boolean abajo=true;
+		int n1 = 1;
+		int indexArriba= 0;
+		int n2 = 1;
+		int indexAbajo= 0;
+		while (arriba) {
+			int posArriba = suffixes[posicionCoincidencia-n1].suffixIndex;
+			if(pattern[indexArriba]==content[posArriba+indexArriba]) {
+				indexArriba++;
+			}else {
+				arriba=false;
+			}
+			if(indexArriba==pattern.length) {
+				posiciones.add(posArriba);
+				n1++;
+				indexArriba=0;
+			}
+		}
+		while(abajo) {
+			int posAbajo = suffixes[posicionCoincidencia+n2].suffixIndex;
+			if(pattern[indexAbajo]==content[posAbajo+indexAbajo]) {
+				indexAbajo++;
+			}else {
+				abajo=false;
+			}
+			if(indexAbajo==pattern.length) {
+				posiciones.add(posAbajo);
+				n2++;
+				indexAbajo=0;
+			}
+		}
+		return posiciones;
+}
+		
+		
+
 
 	public static void main(String[] args) {
 		long t1 = System.nanoTime();
