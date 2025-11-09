@@ -170,6 +170,7 @@ public class FASTAReader {
 			}
 		}
 		return numErrors;
+		
 	}
 
 	/**
@@ -185,7 +186,7 @@ public class FASTAReader {
 		// TODO
 List<Integer> positions = new ArrayList<>();
 		
-		for(int i=0; i<= validBytes-pattern.length; i++) {
+		for(int i=0; i<= validBytes; i++) {
 		try{
 			if(compareImproved(pattern,i)) {
 		
@@ -198,6 +199,7 @@ List<Integer> positions = new ArrayList<>();
 		}
 		
 		return positions;
+		
 	}
 
 	/**
@@ -215,7 +217,7 @@ List<Integer> positions = new ArrayList<>();
 	public List<Integer> searchSNV(byte[] pattern) {
 		// TODO
 		List<Integer> SNV = new ArrayList<>();
-		for(int position=0; position<=validBytes-pattern.length;position++) {
+		for(int position=0; position<=validBytes;position++) {
 		try {
 		
 			
