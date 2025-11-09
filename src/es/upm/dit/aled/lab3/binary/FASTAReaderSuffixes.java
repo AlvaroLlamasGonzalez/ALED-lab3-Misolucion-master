@@ -82,7 +82,7 @@ public class FASTAReaderSuffixes extends FASTAReader {
 		// TODO
 		//debe aprovecharse de la lista ordenada de sufijos para poder ejecutar
 		//una búsqueda binaria.
-		int lo = 0;
+	/*	int lo = 0;
 		int hi = suffixes.length -1;
 		//determinar si se ha encontrado el pattern (el patrón)
 		boolean found = false;
@@ -142,6 +142,87 @@ public class FASTAReaderSuffixes extends FASTAReader {
 			}
 		}
 		return posiciones;
+		*/
+		List<Integer> matches = new ArrayList<Integer>();
+
+		int hi = suffixes.length;
+		int lo = 0;
+		int index = 0;
+
+		int m;
+		int posSuffix;
+
+		boolean found = false;
+		int posInSuffixes = 0;
+
+		while (!found && ((hi - lo) > 1)) {
+			m = (lo + hi) / 2;
+			posSuffix = suffixes[m].suffixIndex;
+
+			// If the pattern value at 'index' IS NOT THE LAST CHARACTER and matches with
+			// the one in the suffix, test the next one
+			if (pattern[index] == content[posSuffix + index]) {
+				index++;
+			}
+			// If the pattern value at 'index' IS THE LAST CHARACTER and matches with
+			// the one in the suffix, we have found a matching sequence
+			if (index == pattern.length && (pattern[index - 1] == content[posSuffix + index - 1])) {
+				matches.add(posSuffix);
+				found = true;
+				posInSuffixes = m;
+			}
+			// If the pattern value at 'index' comes before the one in the suffix...
+			else if (pattern[index] < content[posSuffix + index]) {
+				// ...take the left half of the suffix list
+				// and restart the index
+				hi = m--;
+				index = 0;
+			}
+			// If the pattern value at 'index' comes after the one in the suffix...
+			else if (pattern[index] > content[posSuffix + index]) {
+				// ...take the right half of the suffix list
+				// and restart the index
+				lo = m++;
+				index = 0;
+			}
+		}
+		if (found) {
+			// Now we also check the previous indexes, in case there are more matches
+			int indexSubstract = 1;
+			while (true) {
+				posSuffix = suffixes[posInSuffixes - indexSubstract].suffixIndex;
+				boolean isAlsoMatch = true;
+				for (int s = 0; s < pattern.length; s++) {
+					if (pattern[s] != content[posSuffix + s]) {
+						isAlsoMatch = false;
+						break;
+					}
+				}
+				if (isAlsoMatch) {
+					matches.add(posSuffix);
+					indexSubstract++;
+				} else
+					break;
+			}
+			// Now we also check the next indexes, in case there are more matches
+			int indexAdd = 1;
+			while (true) {
+				posSuffix = suffixes[posInSuffixes + indexAdd].suffixIndex;
+				boolean isAlsoMatch = true;
+				for (int s = 0; s < pattern.length; s++) {
+					if (pattern[s] != content[posSuffix + s]) {
+						isAlsoMatch = false;
+						break;
+					}
+				}
+				if (isAlsoMatch) {
+					matches.add(posSuffix);
+					indexAdd++;
+				} else
+					break;
+			}
+		}
+		return matches;
 }
 		
 		
